@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  useDeleteVideoMutation,
+  useEditVideoMutation,
+} from "../../features/api/apiSlice";
 const Description = ({ video }) => {
+  const [deleteVideo, { isError, isSuccess, isLoading }] =
+    useDeleteVideoMutation();
+  const [editVideo, { isErrorEdit, isSuccessEdit, isLoadingEdit }] =
+    useEditVideoMutation();
+  const navigate = useNavigate();
+  const handleDelete = (id) => {
+    if (id) deleteVideo(id);
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      alert("Video deleted successfully");
+      navigate("/");
+    }
+  }, [isSuccess]);
   return (
     <div>
       <h1 className="text-lg font-semibold tracking-tight text-slate-800">
@@ -25,7 +43,10 @@ const Description = ({ video }) => {
               </span>
             </div>
           </Link>
-          <div className="flex gap-1 items-center hover:text-red-600 cursor-pointer">
+          <div
+            onClick={() => handleDelete(video?.id)}
+            className="flex gap-1 items-center hover:text-red-600 cursor-pointer"
+          >
             <div>
               <FaTrash className="w-4" />
             </div>

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000" }),
-  tagTypes: [],
+  tagTypes: ["Videos", "Video", "RelatedVideos"],
   endpoints: (builder) => ({
     getVideos: builder.query({
       query: () => `/videos`,
@@ -12,7 +12,7 @@ export const apiSlice = createApi({
     }),
     getVideo: builder.query({
       query: (id) => `/videos/${id}`,
-      providesTags: (result, error, arg) => [{ type: "video", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "Video", id: arg }],
     }),
     getRelatedVideos: builder.query({
       query: ({ id, title }) => {
@@ -31,9 +31,34 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: 
+      invalidatesTags: ["Videos"],
+    }),
+    deleteVideo: builder.mutation({
+      query: (id) => ({
+        url: `/videos/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Videos"],
+    }),
+    editVideo: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/videos/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [
+        "Videos",
+        { type: "Video", id: arg.id },
+        { type: "RelatedVideos", id: arg.id },
+      ],
     }),
   }),
 });
-export const { useGetVideosQuery, useGetVideoQuery, useGetRelatedVideosQuery } =
-  apiSlice;
+export const {
+  useGetVideosQuery,
+  useGetVideoQuery,
+  useGetRelatedVideosQuery,
+  useAddVideoMutation,
+  useDeleteVideoMutation,
+  useEditVideoMutation,
+} = apiSlice;

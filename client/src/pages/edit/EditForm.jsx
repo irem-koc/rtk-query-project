@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAddVideoMutation } from "../../features/api/apiSlice";
+import { useEditVideoMutation } from "../../features/api/apiSlice";
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
@@ -9,27 +9,38 @@ const formatDate = (date) => {
     year: "numeric",
   });
 };
-const Form = () => {
-  const [addVideo, { isLoading, isError, isSuccess }] = useAddVideoMutation();
+const EditForm = ({ video }) => {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-
+  const [editVideo, { isError, isLoading, isSuccess }] = useEditVideoMutation();
+  const {
+    id,
+    title,
+    description,
+    author,
+    link,
+    thumbnail,
+    views,
+    date,
+    duration,
+    category,
+  } = video;
   const navigate = useNavigate();
   const onSubmit = (data) => {
     data.date = formatDate(new Date());
+    console.log(data);
     try {
-      addVideo(data);
-      alert("Video added succesfully");
+      editVideo({ id, data });
+      alert("Video edited succesfully");
       navigate("/");
     } catch (error) {
       alert("An error has occured");
     }
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
       {/* title and author */}
@@ -43,6 +54,7 @@ const Form = () => {
             VIDEO TITLE
           </label>
           <input
+            defaultValue={title}
             {...register("title", { required: true })}
             placeholder="Video title"
             type="text"
@@ -59,6 +71,7 @@ const Form = () => {
             AUTHOR
           </label>
           <input
+            defaultValue={author}
             {...register("author", { required: true })}
             placeholder="author"
             type="text"
@@ -78,6 +91,7 @@ const Form = () => {
             YOUTUBE VIDEO LINK
           </label>
           <input
+            defaultValue={link}
             {...register("link", { required: true })}
             placeholder="http://www.youtube.com/123"
             type="url"
@@ -94,6 +108,7 @@ const Form = () => {
             YOUTUBE THUMBNAIL
           </label>
           <input
+            defaultValue={thumbnail}
             {...register("thumbnail", { required: true })}
             placeholder="https://www.yt-thumbnail.com/1img.jpg"
             type="url"
@@ -113,6 +128,7 @@ const Form = () => {
             VIDEO DURATION
           </label>
           <input
+            defaultValue={duration}
             {...register("duration", { required: true })}
             placeholder="1:21:56 hr"
             type="text"
@@ -129,6 +145,7 @@ const Form = () => {
             VIDEO NO OF VIEWS
           </label>
           <input
+            defaultValue={views}
             {...register("views", { required: true })}
             placeholder="12k"
             type="text"
@@ -146,6 +163,7 @@ const Form = () => {
           </label>
           <div className="relative">
             <select
+              aria-selected={category}
               {...register("category", { required: true })}
               id="category"
               className="text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white appearance-none block w-full bg-gray-200"
@@ -179,6 +197,7 @@ const Form = () => {
             VIDEO DESCRIPTION
           </label>
           <textarea
+            defaultValue={description}
             {...register("description", { required: true })}
             placeholder="Video description .."
             className="text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white appearance-none block w-full bg-gray-200"
@@ -192,14 +211,15 @@ const Form = () => {
       {/* submit */}
       <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
         <button
+          disabled={isLoading}
           type="submit"
           className="inline-flex justify-center py-2 px-6 border border-transparent rounded-md hover:bg-indigo-800 focus:outline-none bg-indigo-600 text-white shadow-sm text-sm font-medium "
         >
-          Add video
+          Update Video
         </button>
       </div>
     </form>
   );
 };
 
-export default Form;
+export default EditForm;

@@ -4,7 +4,6 @@ import RelatedVideo from "./RelatedVideo";
 
 const RelatedVideos = ({ id, title }) => {
   const { data: relatedVideos } = useGetRelatedVideosQuery({ id, title });
-  console.log(relatedVideos);
   return (
     <div className="col-span-full lg:col-auto max-h-[570px] overflow-y-auto">
       {relatedVideos?.length > 0 ? (
