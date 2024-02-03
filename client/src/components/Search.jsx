@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const Search = () => {
+const Search = ({ handleSearch }) => {
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    handleSearch(search);
+  }, [handleSearch, search]);
   return (
     <form>
       <input
+        onChange={(e) => setSearch(e.target.value)}
+        value={search}
         type="search"
         name="search"
         placeholder="search"

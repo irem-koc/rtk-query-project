@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
+import AddVideo from "./pages/addVideo/AddVideo";
 import Home from "./pages/home/Home";
 import SingleVideo from "./pages/singleVideo/SingleVideo";
 const router = createBrowserRouter([
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/videos/:id",
         element: <SingleVideo />,
+      },
+      {
+        path: "/videos/add",
+        element: <AddVideo />,
       },
     ],
   },
